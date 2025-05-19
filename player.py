@@ -1,6 +1,5 @@
-from constants import *
-from main import dt # from main import dt
 import pygame
+from constants import *
 from circleshape import CircleShape
 
 class Player(CircleShape):
