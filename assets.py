@@ -1,9 +1,15 @@
 import pygame
 import os
+from constants import *
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = os.path.dirname(__file__)
 
     return os.path.join(base_path, relative_path)
 
-BACKGROUND_IMAGE = pygame.image.load(resource_path("assets/galaxy-night-view.jpg"))
+BACKGROUND_IMAGE = pygame.image.load(resource_path("assets/aste_font1.png"))
+BACKGROUND_IMAGE = pygame.transform.scale(BACKGROUND_IMAGE, (SCREEN_WIDTH, SCREEN_HEIGHT))
+PLAYER_IMAGE = pygame.image.load(resource_path("assets/new_p.png"))
+ASTEROIDE_1_IMAGE = pygame.image.load(resource_path("assets/aste1.png"))
+ASTEROIDE_2_IMAGE = pygame.image.load(resource_path("assets/ast_2.png"))
+ASTEROIDE_3_IMAGE = pygame.image.load(resource_path("assets/ast_3.png"))

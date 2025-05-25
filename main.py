@@ -10,6 +10,7 @@ from assets import BACKGROUND_IMAGE
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    score = SCORE
     
     clock = pygame.time.Clock()
     player_health = 3
@@ -56,14 +57,17 @@ def main():
         for asteroid in asteroids:
             for shot in shots:
                 if asteroid.collision(shot):
+                    score += 1
                     asteroid.split()
                     shot.kill()
+                    
         screen.blit(BACKGROUND_IMAGE, (0, 0))
 
         font = pygame.font.SysFont("comicsans", 30, True)
-        text = font.render("Health: " + str(player_health), 1, (255, 255, 255))     
+        text = font.render("Health: " + str(player_health), 1, (255, 255, 255))  
+        score_text = font.render("PLAYER_SCORE: " + str(score), 1, (255, 255, 255))   
         screen.blit(text, (390, 10))
-
+        screen.blit(score_text, (10, 10))
         for obj in drawable:
             obj.draw(screen)
 
