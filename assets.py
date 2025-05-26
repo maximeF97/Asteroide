@@ -13,3 +13,8 @@ PLAYER_IMAGE = pygame.image.load(resource_path("assets/new_p.png"))
 ASTEROIDE_1_IMAGE = pygame.image.load(resource_path("assets/aste1.png"))
 ASTEROIDE_2_IMAGE = pygame.image.load(resource_path("assets/ast_2.png"))
 ASTEROIDE_3_IMAGE = pygame.image.load(resource_path("assets/ast_3.png"))
+
+BOOST = pygame.image.load(resource_path("assets/fire_boost.png")),
+SHIELD = pygame.image.load(resource_path("assets/shild_p_up.png")),
+#EXTRA_LIFE =pygame.image.load(resource_path("assets/extra_life.png"))
+

@@ -1,4 +1,4 @@
-
+import random
 import sys
 import pygame
 from constants import *
@@ -7,16 +7,26 @@ from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
 from assets import BACKGROUND_IMAGE
+from power_up import BoostBar
+from power_up import Shield
+from power_up import Shield_power_up
+from assets import SHIELD
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     score = SCORE
-    
+    boost_bar = BoostBar(x=260, y=20)  # Create the actual bar instance
+    shield_power_up = Shield_power_up(x=300, y= 400)
+    power_ups = [shield_power_up]
+    shield_spawn_timer = 0
+    next_shield_spawn = random.uniform(20, 35)
     clock = pygame.time.Clock()
     player_health = 3
+    
     invincible = False
     invincibility_timer = 0
 
+    
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
@@ -26,8 +36,8 @@ def main():
     asteroid_field = AsteroidField()
     Shot.containers = (shots, updatable, drawable)
     Player.containers = (updatable, drawable)
-
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    Shield_power_up.containers = (power_ups, drawable)
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,boost_bar)
 
     dt = 0
 
@@ -43,6 +53,9 @@ def main():
                 invincible = False
         for asteroid in asteroids:        
             if not invincible and asteroid.collision(player):
+                if player.shield.active:
+                    print("Shield active! No damage taken.")
+                    continue
                 player_health -= 1
                 print(f"Player hit!! health{player_health}")
                 invincible = True
@@ -60,6 +73,10 @@ def main():
                     score += 1
                     asteroid.split()
                     shot.kill()
+        for powerup in power_ups:
+            if player.collision(powerup):
+                player.shield.activate()
+                power_ups.remove(powerup)  # Remove it from the game
                     
         screen.blit(BACKGROUND_IMAGE, (0, 0))
 
@@ -68,13 +85,30 @@ def main():
         score_text = font.render("PLAYER_SCORE: " + str(score), 1, (255, 255, 255))   
         screen.blit(text, (390, 10))
         screen.blit(score_text, (10, 10))
+        boost_bar.draw(screen)
+        for powerup in power_ups:
+            powerup.draw(screen)
         for obj in drawable:
             obj.draw(screen)
+        
 
         pygame.display.flip()
 
         # limit the framerate to 60 FPS
         dt = clock.tick(60) / 1000
+        # Update shield power-up spawn timer
+        shield_spawn_timer += dt
+        if shield_spawn_timer >= next_shield_spawn:
+            shield_spawn_timer = 0
+            next_shield_spawn = random.uniform(10, 20)
+
+            # Random position on screen (avoid edges)
+            x = random.randint(50, SCREEN_WIDTH - 50)
+            y = random.randint(50, SCREEN_HEIGHT - 50)
+
+            shield_power_up = Shield_power_up(x, y)
+            power_ups.append(shield_power_up)
+            
 
 
 if __name__ == "__main__":
