@@ -65,6 +65,8 @@ class Player(CircleShape):
         self.rect = self.image.get_rect(center=self.position)
         self.shield.update(dt)
         self.shield.position = self.position
+        self.warp_position()
+
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt
@@ -90,13 +92,26 @@ class Player(CircleShape):
 
             # Dessiner la flamme derrière
             screen.blit(rotated_flame, flame_rect.topleft)
-           
 
-
+            
         # Dessiner le vaisseau au-dessus de la flamme
         self.shield.draw(screen)
         if self.visible:
-            screen.blit(self.image, self.rect.topleft)
+            screen.blit(self.image, self.rect.topleft) 
+            
+    def warp_position(self):
+        if self.position.x < 0:
+            self.position.x = SCREEN_WIDTH
+        elif self.position.x > SCREEN_WIDTH:
+            self.position.x = 0
+        if self.position.y < 0:
+            self.position.y = SCREEN_HEIGHT
+        elif self.position.y > SCREEN_HEIGHT:
+            self.position.y = 0
+
+        self.rect.center = self.position
+
+
 
             
 

@@ -8,7 +8,7 @@ from asteroidfield import AsteroidField
 from shot import Shot
 from assets import BACKGROUND_IMAGE
 from power_up import BoostBar
-from power_up import Shield
+from power_up import Extra_Life_power_up
 from power_up import Shield_power_up
 from assets import SHIELD
 def main():
@@ -17,9 +17,12 @@ def main():
     score = SCORE
     boost_bar = BoostBar(x=260, y=20)  # Create the actual bar instance
     shield_power_up = Shield_power_up(x=300, y= 400)
-    power_ups = [shield_power_up]
+    extra_life_power_up = Extra_Life_power_up(x=500, y= 400)
+    power_ups = [shield_power_up, extra_life_power_up]
     shield_spawn_timer = 0
+    extra_life_power_up_spawn_timer = 0
     next_shield_spawn = random.uniform(20, 35)
+    next_extra_life_spawn = random.uniform(40, 50)
     clock = pygame.time.Clock()
     player_health = 3
     
@@ -73,10 +76,14 @@ def main():
                     score += 1
                     asteroid.split()
                     shot.kill()
-        for powerup in power_ups:
+        for powerup in power_ups[:]:
             if player.collision(powerup):
-                player.shield.activate()
-                power_ups.remove(powerup)  # Remove it from the game
+                if isinstance(powerup, Extra_Life_power_up) and player.collision(powerup):
+                    player_health += 1
+                    power_ups.remove(powerup)
+                elif isinstance(powerup, Shield_power_up) and not player.shield.active:
+                    player.shield.activate()
+                    power_ups.remove(powerup)  # Remove it from the game
                     
         screen.blit(BACKGROUND_IMAGE, (0, 0))
 
@@ -108,7 +115,17 @@ def main():
 
             shield_power_up = Shield_power_up(x, y)
             power_ups.append(shield_power_up)
-            
+
+        extra_life_power_up_spawn_timer += dt
+        if extra_life_power_up_spawn_timer >= next_extra_life_spawn:
+            extra_life_power_up_spawn_timer = 0
+            next_extra_life_spawn = random.uniform(30, 45)  # Make extra life spawn slower
+
+            x = random.randint(50, SCREEN_WIDTH - 50)
+            y = random.randint(50, SCREEN_HEIGHT - 50)
+
+            new_life = Extra_Life_power_up(x, y)
+            power_ups.append(new_life)     
 
 
 if __name__ == "__main__":
