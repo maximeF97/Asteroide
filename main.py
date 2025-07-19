@@ -1,4 +1,5 @@
 import random
+import random
 import sys
 import pygame
 from constants import *
@@ -10,6 +11,7 @@ from assets import BACKGROUND_IMAGE
 from power_up import BoostBar
 from power_up import Extra_Life_power_up
 from power_up import Shield_power_up
+from power_up import TripleShot_power_up
 from assets import SHIELD
 def main():
     pygame.init()
@@ -18,11 +20,14 @@ def main():
     boost_bar = BoostBar(x=260, y=20)  # Create the actual bar instance
     shield_power_up = Shield_power_up(x=300, y= 400)
     extra_life_power_up = Extra_Life_power_up(x=500, y= 400)
-    power_ups = [shield_power_up, extra_life_power_up]
+    tripleShot_power_up = TripleShot_power_up(x=700, y= 400)
+    power_ups = [shield_power_up, extra_life_power_up, tripleShot_power_up]
     shield_spawn_timer = 0
     extra_life_power_up_spawn_timer = 0
+    tripleShot_power_up_spawn_timer = 0
     next_shield_spawn = random.uniform(20, 35)
     next_extra_life_spawn = random.uniform(40, 50)
+    next_triple_shot_spawn = random.uniform(60, 70)
     clock = pygame.time.Clock()
     player_health = 3
     
@@ -84,7 +89,10 @@ def main():
                 elif isinstance(powerup, Shield_power_up) and not player.shield.active:
                     player.shield.activate()
                     power_ups.remove(powerup)  # Remove it from the game
-                    
+                elif isinstance(powerup, TripleShot_power_up):
+                    player.triple_shot_active = True
+                    player.triple_shot_timer = player.triple_shot_duration
+                    power_ups.remove(powerup)    
         screen.blit(BACKGROUND_IMAGE, (0, 0))
 
         font = pygame.font.SysFont("comicsans", 30, True)
